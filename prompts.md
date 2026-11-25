@@ -24,3 +24,8 @@ Result: All published numerical checks passed at the precision specified.
 Request: Add design persistence to the spec and implement File > Save and Open.
 Change: Added versioned JSON round-trip and file dialogs; removed saving from out-of-scope items.
 Result: JSON round-trip passed and all four published validation cases still pass.
+
+## 6. CSV export
+Request: Add an Excel-readable table of beam results to the spec and app.
+Change: Added CSV export with labeled units and discontinuity rows.
+Result: CSV header and row-count checks passed; published validation cases still pass.

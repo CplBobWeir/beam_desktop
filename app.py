@@ -6,7 +6,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from beam import Analysis, Design, Load, TABLES
 from plots import draw
-from files_io import save_design, open_design
+from files_io import save_design, open_design, export_csv
 
 class App:
     def __init__(self, root):
@@ -33,6 +33,7 @@ class App:
         self.status=tk.StringVar(value=''); ttk.Label(left,textvariable=self.status,wraplength=320,foreground='#a33b32').pack(fill='x')
         self.actions=ttk.Frame(left); self.actions.pack(fill='x',pady=5)
         menu=tk.Menu(root); self.filemenu=tk.Menu(menu,tearoff=False); menu.add_cascade(label='File',menu=self.filemenu); self.filemenu.add_command(label='Open',command=self.open); self.filemenu.add_command(label='Save',command=self.save); root.config(menu=menu)
+        self.csv_button=ttk.Button(self.actions,text="Export CSV",command=self.csv); self.csv_button.pack(fill="x",pady=3)
         checks=ttk.Frame(right); checks.pack(fill='x'); self.cards=[]
         for name in ('Bending','Deflection'):
             card=ttk.LabelFrame(checks,text=name,padding=8); card.pack(side='left',fill='x',expand=True,padx=3); label=ttk.Label(card,text='—',font=('Segoe UI',11,'bold')); label.pack(anchor='w'); bar=tk.Canvas(card,height=9,background='#dce5e7',highlightthickness=0); bar.pack(fill='x',pady=4); self.cards.append((label,bar))
@@ -81,7 +82,15 @@ class App:
         for (label,bar),actual,allow,unit,passed in zip(self.cards,[a.stress,a.deflection],[a.Fb,a.allow_def],['ksi','in'],[a.bending_pass,a.deflection_pass]):
             r=actual/allow; color='#27835c' if r<.7 else '#b47b1b' if r<=1 else '#b73535'; label.configure(text=f'{actual:.3f} / {allow:.3f} {unit}  •  {"PASS" if passed else "FAIL"}  ({r:.0%})',foreground=color); bar.delete('all'); bar.create_rectangle(0,0,max(1,bar.winfo_width(),180)*min(r,1),9,fill=color,outline='')
         self.suggested=a.recommendation(); self.rec.set('Lightest passing: '+(self.suggested or 'None in this material')); self.use.configure(state='normal' if self.suggested else 'disabled'); self.export_state(True)
-    def export_state(self,valid): self.filemenu.entryconfigure('Save',state='normal' if valid else 'disabled')
+    def export_state(self,valid):
+        state='normal' if valid else 'disabled'; self.filemenu.entryconfigure('Save',state=state); self.csv_button.configure(state=state)
+    def csv(self):
+        self.refresh()
+        if not self.result: return
+        path=filedialog.asksaveasfilename(defaultextension='.csv',filetypes=[('Excel CSV','*.csv')])
+        if path:
+            try: export_csv(path,self.result)
+            except (OSError,ValueError) as e: messagebox.showerror('CSV export failed',str(e))
     def save(self):
         self.refresh()
         if not self.result: return

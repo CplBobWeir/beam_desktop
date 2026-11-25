@@ -42,3 +42,4 @@ Self-weight, shear stress, lateral-torsional buckling, load combinations and con
 
 ## Desktop features
 - File > Save / Open: versioned JSON (.beam.json) preserves all input values and load definitions. Validate before replacing current design; report file errors without crashing.
+- Export CSV: write x (ft), V (kip), M (kip-ft), and deflection (in) using the current plotted results, including two rows at discontinuities to preserve shear jumps. Use standard CSV readable in Excel.
