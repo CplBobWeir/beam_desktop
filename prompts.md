@@ -29,3 +29,8 @@ Result: JSON round-trip passed and all four published validation cases still pas
 Request: Add an Excel-readable table of beam results to the spec and app.
 Change: Added CSV export with labeled units and discontinuity rows.
 Result: CSV header and row-count checks passed; published validation cases still pass.
+
+## 7. PDF calculation sheet
+Request: Add a printable PDF calculation sheet to the spec and app.
+Change: Added letter-size report with inputs, section properties, loads, diagram peaks, reactions and checks; longer load lists use continuation pages.
+Result: Generated the default case PDF; all published numerical validation cases still pass. Visual and GUI smoke tests follow.
