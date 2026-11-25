@@ -6,6 +6,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from beam import Analysis, Design, Load, TABLES
 from plots import draw
+from files_io import save_design, open_design
 
 class App:
     def __init__(self, root):
@@ -31,6 +32,7 @@ class App:
         self.loadframe=ttk.Frame(self.lcanvas); win=self.lcanvas.create_window((0,0),window=self.loadframe,anchor='nw'); self.loadframe.bind('<Configure>',lambda e:self.lcanvas.configure(scrollregion=self.lcanvas.bbox('all'))); self.lcanvas.bind('<Configure>',lambda e:self.lcanvas.itemconfigure(win,width=e.width))
         self.status=tk.StringVar(value=''); ttk.Label(left,textvariable=self.status,wraplength=320,foreground='#a33b32').pack(fill='x')
         self.actions=ttk.Frame(left); self.actions.pack(fill='x',pady=5)
+        menu=tk.Menu(root); self.filemenu=tk.Menu(menu,tearoff=False); menu.add_cascade(label='File',menu=self.filemenu); self.filemenu.add_command(label='Open',command=self.open); self.filemenu.add_command(label='Save',command=self.save); root.config(menu=menu)
         checks=ttk.Frame(right); checks.pack(fill='x'); self.cards=[]
         for name in ('Bending','Deflection'):
             card=ttk.LabelFrame(checks,text=name,padding=8); card.pack(side='left',fill='x',expand=True,padx=3); label=ttk.Label(card,text='—',font=('Segoe UI',11,'bold')); label.pack(anchor='w'); bar=tk.Canvas(card,height=9,background='#dce5e7',highlightthickness=0); bar.pack(fill='x',pady=4); self.cards.append((label,bar))
@@ -79,7 +81,23 @@ class App:
         for (label,bar),actual,allow,unit,passed in zip(self.cards,[a.stress,a.deflection],[a.Fb,a.allow_def],['ksi','in'],[a.bending_pass,a.deflection_pass]):
             r=actual/allow; color='#27835c' if r<.7 else '#b47b1b' if r<=1 else '#b73535'; label.configure(text=f'{actual:.3f} / {allow:.3f} {unit}  •  {"PASS" if passed else "FAIL"}  ({r:.0%})',foreground=color); bar.delete('all'); bar.create_rectangle(0,0,max(1,bar.winfo_width(),180)*min(r,1),9,fill=color,outline='')
         self.suggested=a.recommendation(); self.rec.set('Lightest passing: '+(self.suggested or 'None in this material')); self.use.configure(state='normal' if self.suggested else 'disabled'); self.export_state(True)
-    def export_state(self,valid): pass
+    def export_state(self,valid): self.filemenu.entryconfigure('Save',state='normal' if valid else 'disabled')
+    def save(self):
+        self.refresh()
+        if not self.result: return
+        path=filedialog.asksaveasfilename(defaultextension='.beam.json',filetypes=[('Beam design','*.beam.json'),('JSON','*.json')])
+        if path:
+            try: save_design(path,self.design())
+            except (OSError,ValueError,TypeError) as e: messagebox.showerror('Save failed',str(e))
+    def open(self):
+        path=filedialog.askopenfilename(filetypes=[('Beam design','*.beam.json'),('JSON','*.json'),('All files','*.*')])
+        if not path: return
+        try: d=open_design(path)
+        except (OSError,ValueError,TypeError,KeyError,OverflowError) as e: messagebox.showerror('Open failed',str(e)); return
+        self.support.set(d.support); self.span.set(str(d.span)); self.material.set(d.material); self.section.set(d.section); self.limit.set(str(d.limit))
+        for row in self.rows[:]: self.remove(row)
+        for l in d.loads: self.add(l.kind,l)
+        self.refresh()
     def apply_recommendation(self):
         if self.result and self.suggested: self.section.set(self.suggested)
     def motion(self,event):

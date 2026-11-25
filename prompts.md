@@ -19,3 +19,8 @@ Result: All four published reference cases matched preliminary numerical calcula
 Request: Run all validation cases in spec.md and report expected versus actual.
 Change: Added validate.py and saved its actual output to validation.md.
 Result: All published numerical checks passed at the precision specified.
+
+## 5. Save and open
+Request: Add design persistence to the spec and implement File > Save and Open.
+Change: Added versioned JSON round-trip and file dialogs; removed saving from out-of-scope items.
+Result: JSON round-trip passed and all four published validation cases still pass.

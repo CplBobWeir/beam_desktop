@@ -39,3 +39,6 @@ Published reference cases (reported to stated precision):
 
 ## Out of scope
 Self-weight, shear stress, lateral-torsional buckling, load combinations and continuous beams. Not a substitute for engineering design review.
+
+## Desktop features
+- File > Save / Open: versioned JSON (.beam.json) preserves all input values and load definitions. Validate before replacing current design; report file errors without crashing.
