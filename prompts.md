@@ -34,3 +34,8 @@ Result: CSV header and row-count checks passed; published validation cases still
 Request: Add a printable PDF calculation sheet to the spec and app.
 Change: Added letter-size report with inputs, section properties, loads, diagram peaks, reactions and checks; longer load lists use continuation pages.
 Result: Generated the default case PDF; all published numerical validation cases still pass. Visual and GUI smoke tests follow.
+
+## 8. README, smoke test and packaging
+Request: Finish the project with instructions, verification and a ZIP for submission.
+Change: Added dependency list, README and reproducible Tkinter smoke test. Ran all numerical cases again, tested GUI callbacks and file exports with temporary paths, and visually reviewed the default calculation sheet. Prepared Git history for public publishing.
+Result: Numerical and Linux virtual-display tests passed. Native Windows GUI verification, GitHub publishing and Learning Suite submission have not been performed by the agent.

@@ -31,3 +31,12 @@
 | 4 | deflection_pass | True | True | PASS |
 
 All published checks passed.
+
+## Desktop checks
+
+- Tkinter application launched under Xvfb (Linux virtual display).
+- Default case and cantilever case 3 passed via the actual GUI callbacks.
+- Invalid span cleared the displayed result and disabled exports.
+- Save and open restored the design; CSV had expected header and number of rows; PDF generated successfully.
+- Default exported letter-size PDF rendered and visually inspected.
+- Windows-specific visual layout, native dialog interactions, and hands-on mouse dragging/hovering still require local confirmation.
