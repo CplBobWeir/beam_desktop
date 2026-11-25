@@ -14,3 +14,8 @@ Result: Specification created; no application code in this stage.
 Request: Build the Tkinter beam app from the desktop spec.
 Change: Added separate beam calculation, plotting and interface modules. Implemented load editing, checks, recommendations, diagram hover and point-load dragging.
 Result: All four published reference cases matched preliminary numerical calculations; interface verification follows.
+
+## 4. Validate published cases
+Request: Run all validation cases in spec.md and report expected versus actual.
+Change: Added validate.py and saved its actual output to validation.md.
+Result: All published numerical checks passed at the precision specified.
